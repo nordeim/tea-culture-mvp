@@ -7,7 +7,7 @@ npm install --legacy-peer-deps     # Install (peer dep conflicts require flag)
 npm run dev                        # Dev server at localhost:5173
 npm run build                      # tsc + vite build (< 1s via Rolldown)
 npx tsc --noEmit                   # Type check only
-npx vitest run                     # Run tests once (49 tests in 10 files)
+npx vitest run                     # Run tests once (15 tests)
 npm test                           # Vitest watch mode
 npx tsr generate                   # Regenerate route tree after route file changes
 ```
@@ -70,59 +70,33 @@ manualChunks: { 'react-vendor': ['react', 'react-dom'] }
 
 Use `@/` prefix in all imports: `import { cn } from '@/lib/utils'`
 
-## Component Architecture
-
-```
-components/
-├── layout/     # Navbar (frosted glass on scroll + focus trap), Footer (4-column)
-├── sections/   # 9 landing page sections (Hero → Newsletter)
-└── shared/     # ScrollReveal, Toast, BackToTop, ErrorBoundary, SkipLink
-```
-
-- **ScrollReveal** wraps content with `reveal` class, adds `active` on intersection; extends `HTMLAttributes<HTMLDivElement>`
-- **Toast** auto-dismisses after 3.5s via Zustand store; `timeoutId` module-level to prevent stacking
-- **Navbar** transitions from transparent → `bg-ivory-50/95 backdrop-blur-xl` at scroll > 80px; uses `useThrottledScroll(100ms)`
-- **Social media icons** use inline SVG (Lucide doesn't have brand icons)
-- **SkipLink** `sr-only` + `focus:not-sr-only` for skip-to-content
-- **ErrorBoundary** class component (root + section-level fallback) with `componentDidCatch` + reset
-- **Mobile menu** uses `useFocusTrap(isMobileMenuOpen, menuRef, menuTriggerRef)` for keyboard containment
-
 ## State Management
 
 - **Zustand** for toast store (`src/stores/toast.ts`)
 - **React 19 `useActionState`** for newsletter form (not `useState` + `onSubmit`)
 - Use selector pattern: `useToastStore(s => s.showToast)` — never `.getState()` in JSX
 
-## Custom Hooks
+## Component Architecture
 
-| Hook | Purpose |
-|---|---|
-| `useThrottledScroll` | Throttles scroll via `requestAnimationFrame` + `setTimeout`. Args: `(callback, delay=100)` |
-| `useFocusTrap` | Traps focus within a container for modals/menus. Args: `(isActive, containerRef, triggerRef?)` |
+```
+components/
+├── layout/     Navbar (frosted glass on scroll), Footer (4-column)
+├── sections/   9 landing page sections (Hero → Newsletter)
+└── shared/     ScrollReveal (IntersectionObserver), Toast, BackToTop
+```
+
+- **ScrollReveal** wraps content with `reveal` class, adds `active` on intersection
+- **Toast** auto-dismisses after 3.5s via Zustand store
+- **Navbar** transitions from transparent → `bg-ivory-50/95 backdrop-blur-xl` at scroll > 80px
+- Social media icons use inline SVG (Lucide doesn't have brand icons)
 
 ## Testing
 
 - **Vitest** with jsdom environment, globals enabled
 - Setup file: `src/test/setup.ts` — mocks `IntersectionObserver` and `window.scrollTo`
-- Test files: `src/test/components/*.test.tsx`, `src/test/hooks/*.test.ts`
+- Test files in `src/test/components/`
 - Mock TanStack Router in tests: `vi.mock('@tanstack/react-router', ...)`
 - Wrap Zustand state updates in `act()` in tests
-- Mock `requestAnimationFrame` for tests involving `useThrottledScroll`
-
-### Test Inventory (49 tests across 10 files)
-
-| File | Tests | Component/Hook |
-|---|---|---|
-| `Navbar.test.tsx` | 8 | Logo, links, mobile toggle, close-on-click, focus trap |
-| `Collection.test.tsx` | 9 | Header, tabs, roving tabindex |
-| `Newsletter.test.tsx` | 3 | Form, heading, submission |
-| `Toast.test.tsx` | 4 | Visible, hide, auto-dismiss, rapid calls |
-| `ErrorBoundary.test.tsx` | 4 | Children, root fallback, section fallback, reset |
-| `BackToTop.test.tsx` | 4 | Hidden, scroll visibility, click, aria-label |
-| `ScrollReveal.test.tsx` | 4 | Reveal class, IO active, delay, custom class |
-| `SkipLink.test.tsx` | 2 | Render, sr-only focus |
-| `Footer.test.tsx` | 7 | Brand, links, social aria, legal |
-| `useThrottledScroll.test.ts` | 4 | Callback, throttling, scrollY, unmount |
 
 ## Design Tokens (for reference)
 
@@ -135,26 +109,3 @@ components/
 | `gold-400` | `#C5A55A` | Signature accent |
 
 Fonts: `Playfair Display` (display), `Inter` (body), `Noto Serif` (serif) — loaded in `index.html`
-
-## Newly Removed (Remediation Phase 2)
-
-| Removed | Reason |
-|---|---|
-| `src/types/index.ts` | Dead code (empty file with comment) |
-| `@types/*` path alias | Dead alias (file deleted, no imports) |
-| `--color-ivory-500` | Dead CSS token (never used) |
-| `--animate-slide-in-left` + `@keyframes` | Dead animation (never used) |
-
-## Gotchas
-
-### When Adding New Hooks
-1. Add to `src/hooks/` directory
-2. Export from `src/hooks/{hookName}.ts`
-3. Add tests in `src/test/hooks/{hookName}.test.ts`
-4. Mock `requestAnimationFrame` in tests if the hook uses it (`vi.stubGlobal('requestAnimationFrame', cb => setTimeout(cb, 16))`)
-5. Use `vi.useFakeTimers({ shouldAdvanceTime: true })` for delay-based testing
-
-### When Adding New Routes
-1. Create `src/routes/{name}.tsx` with `createFileRoute()`
-2. Run `npx tsr generate` to regenerate route tree
-3. Do NOT edit `routeTree.gen.ts` manually

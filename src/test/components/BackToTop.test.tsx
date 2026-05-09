@@ -5,11 +5,18 @@ import { BackToTop } from '@/components/shared/BackToTop'
 describe('BackToTop', () => {
   beforeEach(() => {
     vi.useFakeTimers()
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+      return window.setTimeout(cb, 16)
+    })
+    vi.stubGlobal('cancelAnimationFrame', (id: number) => {
+      window.clearTimeout(id)
+    })
     // Reset scroll position
     Object.defineProperty(window, 'scrollY', { value: 0, writable: true })
   })
 
   afterEach(() => {
+    vi.unstubAllGlobals()
     vi.useRealTimers()
   })
 
@@ -28,6 +35,10 @@ describe('BackToTop', () => {
     Object.defineProperty(window, 'scrollY', { value: 700, writable: true })
     act(() => {
       fireEvent.scroll(window)
+    })
+    // Throttled: callback fires after rAF (16ms) + delay (100ms)
+    act(() => {
+      vi.advanceTimersByTime(120)
     })
 
     expect(button).toHaveClass('opacity-100')

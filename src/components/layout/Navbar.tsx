@@ -1,6 +1,8 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { Leaf, ShoppingBag, Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useThrottledScroll } from '@/hooks/useThrottledScroll'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 
 const navLinks = [
   { href: '#philosophy', label: 'Philosophy' },
@@ -14,16 +16,15 @@ export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 80)
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  useThrottledScroll((scrollY) => {
+    setIsScrolled(scrollY > 80)
+  }, 100)
 
   const closeMobileMenu = useCallback(() => setIsMobileMenuOpen(false), [])
+  const menuTriggerRef = useRef<HTMLButtonElement>(null)
+
+  // Focus trap for mobile menu
+  useFocusTrap(isMobileMenuOpen, menuRef, menuTriggerRef)
 
   // Close on Escape key
   useEffect(() => {
@@ -79,6 +80,7 @@ export function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
+            ref={menuTriggerRef}
             className="md:hidden w-10 h-10 flex items-center justify-center rounded-full hover:bg-ivory-300 transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}

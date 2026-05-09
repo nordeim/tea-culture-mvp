@@ -27,11 +27,11 @@ Follow this six-phase workflow for all implementation tasks:
 1. **ANALYZE** — Deep, multi-dimensional requirement mining
    - Never make surface-level assumptions
    - Identify explicit requirements, implicit needs, and potential ambiguities
-   - Explore multiple solution approaches
+   - Explore multiple solution approaches; evaluate against technical feasibility and project goals
    - Perform risk assessment with mitigation strategies
 
 2. **PLAN** — Structured execution roadmap
-   - Create detailed plan with sequential phases, integrated checklists, and validation checkpoints
+   - Create a detailed plan with sequential phases, integrated checklists, and validation checkpoints
    - Present the plan for explicit user confirmation before writing any code
    - Never proceed to implementation without validation
 
@@ -132,16 +132,14 @@ Example: `import { cn } from '@/lib/utils'`
 ### Component Architecture
 ```
 components/
-├── layout/     # Navbar (frosted glass + focus trap), Footer (4-column)
+├── layout/     # Navbar (frosted glass on scroll), Footer (4-column)
 ├── sections/   # 10 landing page sections (Hero → Newsletter)
-└── shared/     # ScrollReveal, Toast, BackToTop, ErrorBoundary, SkipLink
+└── shared/     # ScrollReveal, Toast, BackToTop, ErrorBoundary
 ```
 
-- **ScrollReveal**: Wraps content with `reveal` class, adds `active` on IntersectionObserver intersection; extends `HTMLAttributes<HTMLDivElement>`
-- **Toast**: Zustand-powered, auto-dismisses after 3.5s; `timeoutId` module-level to prevent stacking
-- **Navbar**: Transparent on load → `bg-ivory-50/95 backdrop-blur-xl` when scroll > 80px; uses `useThrottledScroll(100ms)`
-- **SkipLink**: `sr-only` + `focus:not-sr-only` for WCAG skip-to-content
-- **ErrorBoundary**: Class component (root + section-level fallback) with `componentDidCatch` + reset
+- **ScrollReveal**: Wraps content with `reveal` class, adds `active` on IntersectionObserver intersection
+- **Toast**: Zustand-powered, auto-dismisses after 3.5s
+- **Navbar**: Transparent on load → `bg-ivory-50/95 backdrop-blur-xl` when scroll > 80px
 - **Social icons**: Inline SVG (Lucide lacks brand icons)
 
 ---
@@ -162,7 +160,7 @@ npm install --legacy-peer-deps    # Peer dependency conflicts require this flag
 | `npm run preview` | Preview production build locally |
 | `npm test` | Vitest in watch mode |
 | `npx tsc --noEmit` | TypeScript type check only |
-| `npx vitest run` | Run all tests once (49 tests in 10 files) |
+| `npx vitest run` | Run all tests once (15 tests) |
 | `npx tsr generate` | Regenerate `src/routeTree.gen.ts` after route file changes |
 
 **Required verification order**: `npx tsc --noEmit` → `npm run build` → `npx vitest run`
@@ -172,7 +170,6 @@ npm install --legacy-peer-deps    # Peer dependency conflicts require this flag
 - **Run `npx tsr generate` after every route file change** — do NOT edit `src/routeTree.gen.ts` manually
 - Root layout: `src/routes/__root.tsx`
 - Home page: `src/routes/index.tsx`
-- Not-found: `src/routes/not-found.tsx`
 - Route tree is auto-generated
 
 ---
@@ -183,30 +180,21 @@ npm install --legacy-peer-deps    # Peer dependency conflicts require this flag
 - **Vitest** with `jsdom` environment and `globals: true`
 - **Testing Library** (`@testing-library/react`, `jest-dom` matchers)
 - **Setup file**: `src/test/setup.ts` — mocks `IntersectionObserver` and `window.scrollTo`
-- **Test files**: `src/test/components/*.test.tsx`, `src/test/hooks/*.test.ts`
+- **Test files**: `src/test/components/*.test.tsx`
 
-### Test Coverage (49 tests across 10 files)
+### Test Coverage (15 tests across 4 files)
 
 | Component | Tests | What's Tested |
 |---|---|---|
-| Navbar | 8 | Logo, desktop links, mobile toggle, close-on-click, focus trap |
-| Collection | 9 | Header, default tab, 3 tab switches, roving tabindex |
+| Navbar | 4 | Logo render, desktop links, mobile toggle, close-on-click |
+| Collection | 5 | Section header, default tab, 3 tab switches |
 | Newsletter | 3 | Form render, heading, submission confirmation |
-| Toast | 4 | Hidden, visible, auto-dismiss (3.5s), rapid successive calls |
-| ErrorBoundary | 4 | Children render, root fallback, section fallback, reset |
-| BackToTop | 4 | Hidden at top, visible on scroll, click behavior, aria-label |
-| ScrollReveal | 4 | Reveal class, active on IO, delay, custom className |
-| SkipLink | 2 | Renders, sr-only focus-visible |
-| Footer | 7 | Brand, links, social aria-labels, legal, heritage description |
-| useThrottledScroll | 4 | Callback fires, throttles rapid, latest scrollY, unmount |
+| Toast | 3 | Hidden by default, visible on show, auto-dismiss (3.5s) |
 
 ### Mocking Conventions
 - Mock TanStack Router in tests: `vi.mock('@tanstack/react-router', ...)`
 - Wrap Zustand state updates in `act()` in tests
 - `IntersectionObserver` and `window.scrollTo` are pre-mocked in `src/test/setup.ts`
-- Mock `requestAnimationFrame` in tests involving `useThrottledScroll`: `vi.stubGlobal('requestAnimationFrame', cb => setTimeout(cb, 16))`
-- Mock `cancelAnimationFrame` similarly: `vi.stubGlobal('cancelAnimationFrame', id => clearTimeout(id))`
-- Use `vi.useFakeTimers({ shouldAdvanceTime: true })` for delay-based testing
 
 ### Test Commands
 ```bash
@@ -266,9 +254,6 @@ All three must pass. Zero TypeScript errors, zero test failures, zero build warn
 - **`enum` is a build error** → use union types
 - **`inert` prop TS error** → pass boolean `inert={!isOpen}` not string
 - **Route tree out of sync** → run `npx tsr generate`
-- **`requestAnimationFrame` not firing in tests** → use `vi.stubGlobal('requestAnimationFrame', cb => setTimeout(cb, 16))`
-- **Throttled scroll tests failing** → advance timers by rAF delay + throttle delay (e.g., `vi.advanceTimersByTime(120)`)
-- **ErrorBoundary emits console errors during tests** → expected behavior; `componentDidCatch` logs to `stderr`; test assertions still pass
 
 ---
 
@@ -280,12 +265,11 @@ All three must pass. Zero TypeScript errors, zero test failures, zero build warn
 - Keep AGENTS.md and CLAUDE.md in sync when any convention changes
 
 ### When to Update AGENTS.md / CLAUDE.md
-- Adding new path aliases or hooks
+- Adding new path aliases
 - Changing build scripts or commands
 - Adding new framework-specific rules
 - Modifying design tokens or Tailwind patterns
 - Changing testing conventions
-- Adding new anti-patterns or gotchas
 
 ---
 
@@ -295,13 +279,6 @@ All three must pass. Zero TypeScript errors, zero test failures, zero build warn
 - **Zustand** for global toast notifications (`src/stores/toast.ts`)
 - **Selector pattern**: `useToastStore(s => s.showToast)` — never `.getState()` in JSX
 - **React 19 `useActionState`** for newsletter form state (not `useState` + `onSubmit`)
-
-### Custom Hooks
-
-| Hook | Purpose | Location |
-|---|---|---|
-| `useThrottledScroll` | Throttles scroll via `requestAnimationFrame` + `setTimeout` | `src/hooks/useThrottledScroll.ts` |
-| `useFocusTrap` | Traps focus within container for modals/menus | `src/hooks/useFocusTrap.ts` |
 
 ### Design Tokens (Reference)
 
@@ -334,22 +311,16 @@ src/
 │   ├── sections/    # Hero, Philosophy, Collection, TeaCulture,
 │   │              #   MacroFeature, Subscription, Testimonials,
 │   │              #   CTA, Newsletter (10 sections total)
-│   └── shared/      # ScrollReveal, Toast, BackToTop, ErrorBoundary, SkipLink
-├── routes/          # __root.tsx, index.tsx, not-found.tsx
+│   └── shared/      # ScrollReveal, Toast, BackToTop, ErrorBoundary
+├── routes/          # __root.tsx, index.tsx
 ├── stores/          # Zustand toast store
-├── hooks/           # useThrottledScroll, useFocusTrap
+├── hooks/           # useScrollReveal (IntersectionObserver)
 ├── lib/             # cn() helper (clsx + tailwind-merge)
-├── test/            # Vitest setup + component + hook tests
+├── types/           # Product, Season, Testimonial interfaces
+├── test/            # Vitest setup + component tests
 ├── globals.css      # Tailwind v4 @theme (colors, fonts, animations)
 └── main.tsx         # Entry with RouterProvider + ErrorBoundary
 ```
-
-### Recently Removed (Dead Code Cleanup)
-- `src/types/index.ts` — empty file; not deleted but should be removed from codebase
-- `@types/*` path alias — removed from `tsconfig.json`, `vite.config.ts`, `vitest.config.ts`
-- `--color-ivory-500` — removed from `globals.css` (never used)
-- `--animate-slide-in-left` + `@keyframes` — removed from `globals.css` (never used)
-- `src/hooks/useScrollReveal.ts` — duplicated by ScrollReveal component's own observer
 
 ---
 
@@ -357,13 +328,11 @@ src/
 
 You are successful when:
 - `npx tsc --noEmit` reports **zero errors**
-- `npx vitest run` reports **49/49 tests passing**
+- `npx vitest run` reports **15/15 tests passing**
 - `npm run build` completes in **< 1s** with zero warnings
 - Design tokens remain consistent across all components
 - All scroll animations and toast interactions work correctly
 - Mobile responsive from 320px to 1440px
-- Focus trap and keyboard navigation work correctly
-- Scroll events are throttled (no unnecessary re-renders)
 
 ---
 
@@ -379,9 +348,9 @@ You are successful when:
 - Entry: `src/main.tsx`
 - Routes: `src/routes/`
 - Components: `src/components/`
-- Hooks: `src/hooks/`
 - Tests: `src/test/`
 - Styles: `src/globals.css`
+- Types: `src/types/index.ts`
 
 ---
 
@@ -399,53 +368,6 @@ You are successful when:
 | `useState` + `onSubmit` for forms | Not leveraging React 19 | `useActionState` |
 | Editing `routeTree.gen.ts` | Auto-generated, will be overwritten | Run `npx tsr generate` |
 | Skipping verification order | Type/build/test can diverge | Always `tsc` → `build` → `vitest` |
-
----
-
-## Troubleshooting & Pitfalls Guide
-
-### Browser Runtime Issues
-| Symptom | Root Cause | Fix |
-|---|---|---|
-| Scroll animations stutter | Unthrottled `addEventListener('scroll')` | Use `useThrottledScroll` hook |
-| Mobile menu doesn't trap focus | `Tab` escapes menu onto main content | Use `useFocusTrap` hook |
-| Images cause layout shift | No `width`/`height` on `<img>` | Add intrinsic sizing |
-| External images load slowly | `picsum.photos` is placeholder | Replace with production CDN |
-
-### Test Failures
-| Symptom | Root Cause | Fix |
-|---|---|---|
-| `requestAnimationFrame` not defined | jsdom doesn't implement rAF | `vi.stubGlobal('requestAnimationFrame', cb => setTimeout(cb, 16))` |
-| Throttled scroll tests timeout | Not advancing timers far enough | Use `vi.advanceTimersByTime(rAF_delay + throttle_delay)` |
-| Console errors in ErrorBoundary tests | `componentDidCatch` calls `console.error` | Expected behavior — move `vi.spyOn` into `beforeAll`/`afterAll` |
-| Zustand state leaks between tests | Not resetting store | Call `useStore.getState().reset()` in `beforeEach` |
-| Collection tab content not found | Tab panel not yet rendered | Wrap in `act()` and advance timers |
-
-### Build Issues
-| Symptom | Root Cause | Fix |
-|---|---|---|
-| `TS6133: 'useMemo' is declared but never read` | Import present but unused | Remove unused imports; TypeScript strict mode enforces this |
-| `TS2304: Cannot find name 'beforeAll'` | Missing import from `vitest` | Add `beforeAll`, `afterAll` to vitest import |
-| Route tree doesn't include new route | Forgot to regenerate | Run `npx tsr generate` after adding route files |
-
----
-
-## Remediation History
-
-### Phase 1: Initial Build (Original)
-- TypeScript strict, 15 tests, 4 files
-- No CSP, no OG meta, no ARIA tabs, no focus trap
-
-### Phase 2: Remediation (2026-05-09)
-- **8 fixes applied** — see list below
-- Tests: 15 → **49** (+240%, 4 → 10 test files)
-- New: `useThrottledScroll`, `useFocusTrap`, `SkipLink`, `ErrorBoundary`, `not-found` route
-- Security: CSP + OG/Twitter Card added to `index.html`
-- Accessibility: SkipLink, focus trap, roving tabindex, ARIA tabs
-
-### Phase 3: Documentation Update (2026-05-09)
-- Updated README.md, AGENTS.md, CLAUDE.md with all changes
-- Added troubleshooting guide, anti-patterns, gotchas
 
 ---
 

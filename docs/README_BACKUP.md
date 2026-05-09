@@ -4,8 +4,8 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-8.0-646CFF?logo=vite&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.2-06B6D4?logo=tailwindcss&logoColor=white)
-![Tests](https://img.shields.io/badge/Tests-49%20passing-22C55E)
-![Build](https://img.shields.io/badge/Build-630ms-22C55E)
+![Tests](https://img.shields.io/badge/Tests-15%20passing-22C55E)
+![Build](https://img.shields.io/badge/Build-502ms-22C55E)
 
 A premium tea e-commerce landing page for a Singapore-based heritage tea brand. Built with React 19, TypeScript 6, Vite 8 (Rolldown), and Tailwind CSS v4 — faithful to a hand-crafted HTML mockup with 10 distinct sections, scroll animations, and interactive product browsing.
 
@@ -29,12 +29,8 @@ A premium tea e-commerce landing page for a Singapore-based heritage tea brand. 
 | 🧊 | **Frosted Glass Navbar** | Transparent on load, transitions to backdrop-blur on scroll |
 | 📧 | **Newsletter Form** | React 19 `useActionState` with inline validation and confirmation |
 | 🔔 | **Toast Notifications** | Zustand-powered auto-dismissing notifications (3.5s) |
-| ♿ | **Keyboard Accessible** | Focus-visible outlines, semantic HTML, ARIA labels, skip-to-content, focus trap, roving tabindex |
+| ♿ | **Keyboard Accessible** | Focus-visible outlines, semantic HTML, ARIA labels on interactive elements |
 | 🎭 | **Reduced Motion Support** | All animations respect `prefers-reduced-motion` |
-| 🛡️ | **Content Security Policy** | CSP meta tag protecting against XSS |
-| 📢 | **Social Sharing** | Open Graph + Twitter Card meta tags |
-| 🔄 | **Scroll Throttling** | `requestAnimationFrame`-based throttled scroll (100ms) |
-| 🧩 | **404 Page** | Styled not-found route with design-system alignment |
 
 ## Tech Stack
 
@@ -75,7 +71,7 @@ npx tsc --noEmit
 # Build — expect < 1s
 npm run build
 
-# Tests — expect 49/49 passing
+# Tests — expect 15/15 passing
 npx vitest run
 ```
 
@@ -114,18 +110,18 @@ npx vitest run
 src/
 ├── 📂 components/
 │   ├── 📂 layout/           # Navbar (fixed, frosted glass), Footer (4-column)
-│   ├── 📂 sections/         # 9 page sections
-│   └── 📂 shared/           # ScrollReveal, Toast, BackToTop, ErrorBoundary, SkipLink
+│   ├── 📂 sections/         # 9 page sections (Hero → Newsletter)
+│   └── 📂 shared/           # ScrollReveal, Toast, BackToTop
 ├── 📂 routes/               # TanStack file-based routing
 │   ├── __root.tsx           # Root layout (Navbar + Outlet + Footer)
-│   ├── index.tsx            # Home — all sections
-│   └── not-found.tsx        # 404 catch-all page
+│   └── index.tsx            # Home — renders all sections
 ├── 📂 stores/               # Zustand toast store
-├── 📂 hooks/                # useThrottledScroll, useFocusTrap
+├── 📂 hooks/                # useScrollReveal (IntersectionObserver)
 ├── 📂 lib/                  # cn() helper (clsx + tailwind-merge)
-├── 📂 test/                 # Vitest setup + component + hook tests
+├── 📂 types/                # Product, Season, Testimonial interfaces
+├── 📂 test/                 # Vitest setup + component tests
 ├── globals.css              # Tailwind v4 @theme (colors, fonts, animations)
-└── main.tsx                 # Entry — RouterProvider + ErrorBoundary
+└── main.tsx                 # Entry — RouterProvider
 ```
 
 ### Key Patterns
@@ -134,11 +130,6 @@ src/
 - **Function-form `manualChunks`** — Vite 8 / Rolldown requires function, not object
 - **React 19 `useActionState`** — newsletter form with async validation
 - **Zustand selector pattern** — `useToastStore(s => s.showToast)` for re-render optimization
-- **ErrorBoundary** — class component at root + section-level with reset
-- **SkipLink** — WCAG skip-to-content link with `sr-only` focus-visible
-- **Throttled scroll** — `useThrottledScroll` (rAF + setTimeout) for performance
-- **Focus trap** — `useFocusTrap` for mobile menu keyboard containment
-- **ARIA tabs** — `role="tablist"`, `tab`, `tabpanel` with roving keyboard support
 
 ## Testing
 
@@ -157,39 +148,22 @@ npx vitest run --coverage
 
 | Component | Tests | What's Tested |
 |---|---|---|
-| Navbar | 8 | Logo, desktop links, mobile toggle, close-on-click |
-| Collection | 9 | Header, default tab, 3 tab switches |
+| Navbar | 4 | Logo render, desktop links, mobile toggle, close-on-click |
+| Collection | 5 | Section header, default tab, 3 tab switches |
 | Newsletter | 3 | Form render, heading, submission confirmation |
-| Toast | 4 | Hidden by default, visible on show, auto-dismiss, rapid calls |
-| ErrorBoundary | 4 | Children render, full-page fallback, section fallback, reset |
-| BackToTop | 4 | Hidden at top, visible on scroll, click behavior, aria-label |
-| ScrollReveal | 4 | Reveal class, active on IO, delay, custom className |
-| SkipLink | 2 | Renders, sr-only focus-visible |
-| Footer | 7 | Brand, links, social aria-labels, legal, heritage description |
-| useThrottledScroll | 4 | Callback fires, throttles rapid, receives latest scrollY, unmount |
-| **Total** | **49** | **10 test files, all passing** |
+| Toast | 3 | Hidden by default, visible on show, auto-dismiss (3.5s) |
+| **Total** | **15** | **All passing** |
 
-## Remediation History
+## Project Status
 
-| Phase | Date | Accomplishments |
+| Phase | Status | Deliverables |
 |---|---|---|
-| **Phase 1: Initial Build** | Original | TypeScript strict, 15 tests, 4 sections, no CSP, no ARIA tabs, no focus trap |
-| **Phase 2: Remediation** | 2026-05-09 | **8 fixes applied** — see full summary below |
-
-### Phase 2 Remediation Summary
-
-| # | Fix | Detail |
-|---|---|---|
-| 1 | **Dead code removed** | `src/types/index.ts` deleted, `@types/*` alias purged, `ivory-500` CSS removed, `slide-in-left` removed |
-| 2 | **CSP meta tag** | `Content-Security-Policy` added to `index.html` |
-| 3 | **OG/Twitter meta** | Open Graph + Twitter Card added to `index.html` |
-| 4 | **Console error suppression** | `consoleSpy` moved to `beforeAll`/`afterAll` in ErrorBoundary tests |
-| 5 | **ErrorBoundary** | Class component with root + section-level fallback; wrapped in `main.tsx` |
-| 6 | **Not-found route** | `not-found.tsx` created with design-system styling; route tree regenerated |
-| 7 | **Throttled scroll** | `useThrottledScroll` hook added; integrated into `Navbar`, `BackToTop` |
-| 8 | **Focus trap** | `useFocusTrap` hook added; integrated into `Navbar` mobile menu |
-
-**Test evolution:** 15 tests → **49 tests** (+240%) across 4 files → **10 files** (+150%)
+| Phase 1: Analyze | ✅ | Design intent, color system, typography, page structure |
+| Phase 2: Plan | ✅ | Project structure, implementation order, risk assessment |
+| Phase 3: Validate | ✅ | Design decisions confirmed |
+| Phase 4: Implement | ✅ | Full source — 29 files, ~2000 lines |
+| Phase 5: Verify | ✅ | TSC clean, build 502ms, 15/15 tests |
+| Phase 6: Deliver | ✅ | Production-ready build |
 
 ## Troubleshooting
 
@@ -201,9 +175,6 @@ npx vitest run --coverage
 | `enum` rejected by TypeScript | `erasableSyntaxOnly` disallows enums — use union types instead |
 | `inert` prop TypeScript error | `inert` is a boolean prop, not string — use `inert={!isOpen}` |
 | IntersectionObserver undefined in tests | Mock in `src/test/setup.ts` (see file for implementation) |
-| `requestAnimationFrame` not firing in tests | Use `vi.stubGlobal('requestAnimationFrame', cb => setTimeout(cb, 16))` |
-| Throttled scroll tests failing | Advance timers by rAF delay + throttle delay (e.g., `vi.advanceTimersByTime(120)`) |
-| ErrorBoundary emits console errors during tests | Expected — `componentDidCatch` logs to `stderr`; test assertions still pass |
 
 ## License
 

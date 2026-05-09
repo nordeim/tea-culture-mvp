@@ -1,3 +1,7 @@
+awesome meticulous job so far. please keep up the good work. now, please meticulously plan to review and update @README.md , @AGENTS.md and @CLAUDE.md with recent changes and your accomplishments, including troubleshooting tips, anti-patterns, pitfalls and gotchas and how to avoid them.
+
+---
+
 awesome meticulous job so far. please keep up the good work. now, please meticulously re-evaluate and re-validate the critical gaps below to confirm the root causes and to identify the optimal fix. then meticulously plan to create a detailed remediation plan with ToDo list to apply the validated optimal fixes for the validated gaps and issues/bugs. review and validate the remediation against the codebase again to check for correct alignment before proceeding to execute it meticulously. use TDD approach to make changes. 
 
 # Todos
