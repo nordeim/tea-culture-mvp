@@ -11,7 +11,24 @@
 
 The CHA YUAN MVP is a well-crafted premium tea landing page that demonstrates strong design sensibility and solid foundational architecture. The codebase passes all type checks, builds in under 1 second, and has 16 passing tests. However, a thorough multi-axis audit reveals **7 critical issues, 18 important issues, and 25+ suggestions** spanning accessibility compliance, testing coverage, performance optimization, and UX completeness. The most pressing concerns are WCAG 2.1 AA violations (keyboard traps, missing ARIA patterns), low test coverage (~25% of components), and eager loading of all 10 sections without code splitting or lazy loading.
 
-**Risk Rating:** 🟡 Medium — Production-adequate for a marketing MVP, but needs accessibility and testing remediation before scaling.
+**Risk Rating:** 🟢 Low-Medium — Critical accessibility and correctness issues resolved. Remaining items are optimization and feature gaps.
+
+---
+
+## Remediation Status (Applied 2026-05-09)
+
+All critical (C-01 through C-07) and important (I-07, I-13) findings have been remediated. See `REMEDIATION_PLAN.md` for detailed change log.
+
+| Category | Before | After |
+|----------|--------|-------|
+| Test files | 4 | 9 |
+| Test count | 16 | 45 |
+| Components tested | 4/16 (25%) | 9/16 (56%) |
+| WCAG keyboard issues | 4 critical | 0 critical |
+| Error boundaries | 1 (root only) | 10 (root + 9 sections) |
+| Dead code files | 2 | 0 |
+
+**Post-remediation verification:** `tsc --noEmit` ✅ | `vitest run` 45/45 ✅ | `vite build` 648ms ✅
 
 ---
 
