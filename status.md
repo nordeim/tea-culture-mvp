@@ -83,3 +83,31 @@ README.md created at `/root/.openclaw/workspace/tea-culture-mvp/README.md`. Here
 - Deployment (no production config)
 - Contributing (private project)
 - API Reference (no API)
+
+---
+
+Replaced the generic AGENTS.md with a project-specific version. Here's what changed:
+
+**Removed** (per skill rules — generic, not repo-specific):
+- The entire "Meticulous Approach" 6-phase workflow essay
+- "Anti-Generic Design Philosophy" manifesto
+- "Communication Standards" and "Response Structure" templates
+- Generic coding practices (early returns, composition over inheritance, etc.)
+- "Specialized Knowledge Application" list
+- Verbose "Error Handling & Troubleshooting" process
+- ~150 lines of generic guidance
+
+**Added** (high-signal, repo-specific):
+- Exact commands table with `--legacy-peer-deps` flag
+- Required verification order: tsc → build → test
+- TypeScript strict constraints table (erasableSyntaxOnly, no enums, no `private`)
+- Tailwind v4 gotchas (no config file, double-hyphen negative values)
+- Vite 8 manualChunks function-form requirement
+- TanStack Router `npx tsr generate` reminder
+- Path aliases table
+- State management patterns (Zustand selectors, useActionState)
+- Component architecture summary
+- Testing setup (IntersectionObserver mock, TanStack Router mock)
+- Design tokens reference
+
+**Litmus test applied:** every line answers "would an agent likely miss this without help?" — the Tailwind v4 double-hyphen, Vite 8 manualChunks, `erasableSyntaxOnly`, and `npx tsr generate` are exactly the kind of things that burn debugging time.
