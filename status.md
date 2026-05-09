@@ -111,3 +111,57 @@ Replaced the generic AGENTS.md with a project-specific version. Here's what chan
 - Design tokens reference
 
 **Litmus test applied:** every line answers "would an agent likely miss this without help?" — the Tailwind v4 double-hyphen, Vite 8 manualChunks, `erasableSyntaxOnly`, and `npx tsr generate` are exactly the kind of things that burn debugging time.
+
+---
+
+### What was conducted
+
+A systematic, five-axis code review applying four specialized skills across the entire codebase (29 source files, ~2,200+ lines, 15 tests):
+
+┌───────────────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ Skill                         │ Focus Area                                                                                              │
+├───────────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ react19-typescript6-vite8-mvp │ TypeScript strictness, React 19 hooks, Vite 8/Rolldown, Tailwind v4 CSS-first, Zustand, TanStack Router │
+├───────────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ super-frontend-design         │ Anti-generic design, aesthetic principles, micro-interactions, reduced motion, intentional whitespace   │
+├───────────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ frontend-ui-engineering       │ Component architecture, accessibility (WCAG), keyboard navigation, responsive design, loading states    │
+├───────────────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ code-review-and-quality       │ Correctness, readability, architecture, security, performance                                           │
+└───────────────────────────────┴─────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+### Key Findings Summary
+
+┌─────────────┬───────────┬──────────────────────────────────────────────────────────────────────────────────────┐
+│ Category    │ Findings  │ Severity                                                                             │
+├─────────────┼───────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+│ 🔴 Critical │ 4 issues  │ Missing CSP, no lazy loading, no focus trap, missing skip link                       │
+├─────────────┼───────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+│ 🟡 Medium   │ 14 issues │ External images, large components, unthrottled events, no 404, ARIA gaps, no OG meta │
+├─────────────┼───────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+│ 🟢 Minor    │ 5 issues  │ Dead tokens, missing rel attrs, decorative SVG ARIA                                  │
+└─────────────┴───────────┴──────────────────────────────────────────────────────────────────────────────────────┘
+
+### Overall Grade: B+
+
+- ✅ TypeScript: A+ (exemplary strict mode, zero errors)
+- ✅ Build: A+ (< 1s via Rolldown, all tests pass)
+- ✅ UI/UX Aesthetics: A (beautiful design system, consistent tokens)
+- ⚠️ Accessibility: C+ (missing landmarks, focus traps, skip link)
+- ⚠️ Security: B (missing CSP, no input sanitization)
+- ⚠️ Performance: B (no lazy loading, external images, unthrottled scroll)
+- ⚠️ Testing: B (25% component coverage — only 4/16 components tested)
+
+### Remediation Phases (Prioritized)
+
+1. Phase 1 (Critical): Security & Accessibility — CSP, skip link, focus trap
+2. Phase 2 (High): Performance — lazy loading, image sizing, OG meta
+3. Phase 3 (Medium): Architecture — component splitting, data extraction
+4. Phase 4 (Medium): Testing — add tests for untested components
+5. Phase 5 (Low): Polish — dead code removal, throttling, dark mode
+
+### Next Steps
+
+- Prioritize Phase 1 (Security & Accessibility) before production deployment
+- Review the full report for detailed code-level recommendations with line numbers and exact fixes
+- Consider adding Playwright E2E tests for critical user journeys (hero → subscribe → toast)
