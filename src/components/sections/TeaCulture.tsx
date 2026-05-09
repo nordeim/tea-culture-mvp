@@ -64,7 +64,7 @@ export function TeaCulture() {
         {/* Culture Grid */}
         <div className="grid md:grid-cols-3 gap-8">
           {cultureCards.map((card) => (
-            <ScrollReveal key={card.title} delay={card.delay ?? 0} className="group relative rounded-2xl overflow-hidden cursor-pointer">
+            <ScrollReveal key={card.title} delay={card.delay ?? 0} className="group relative rounded-2xl overflow-hidden cursor-pointer" tabIndex={0} role="link" aria-label={`Learn more about ${card.title}`} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); /* future: navigate */ } }}>
               <div className="aspect-[3/4] overflow-hidden">
                 <img
                   src={card.image}

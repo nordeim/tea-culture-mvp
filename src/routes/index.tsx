@@ -8,6 +8,7 @@ import { Subscription } from '@/components/sections/Subscription'
 import { Testimonials } from '@/components/sections/Testimonials'
 import { CTA } from '@/components/sections/CTA'
 import { Newsletter } from '@/components/sections/Newsletter'
+import { ErrorBoundary } from '@/components/shared/ErrorBoundary'
 
 export const Route = createFileRoute('/')({
   component: HomePage,
@@ -16,15 +17,15 @@ export const Route = createFileRoute('/')({
 function HomePage() {
   return (
     <>
-      <Hero />
-      <Philosophy />
-      <Collection />
-      <TeaCulture />
-      <MacroFeature />
-      <Subscription />
-      <Testimonials />
-      <CTA />
-      <Newsletter />
+      <ErrorBoundary sectionName="Hero"><Hero /></ErrorBoundary>
+      <ErrorBoundary sectionName="Philosophy"><Philosophy /></ErrorBoundary>
+      <ErrorBoundary sectionName="Collection"><Collection /></ErrorBoundary>
+      <ErrorBoundary sectionName="Tea Culture"><TeaCulture /></ErrorBoundary>
+      <ErrorBoundary sectionName="The Leaf"><MacroFeature /></ErrorBoundary>
+      <ErrorBoundary sectionName="Subscription"><Subscription /></ErrorBoundary>
+      <ErrorBoundary sectionName="Testimonials"><Testimonials /></ErrorBoundary>
+      <ErrorBoundary sectionName="Call to Action"><CTA /></ErrorBoundary>
+      <ErrorBoundary sectionName="Newsletter"><Newsletter /></ErrorBoundary>
     </>
   )
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { ArrowRight, Sprout, Sun, Leaf, Snowflake } from 'lucide-react'
 import { ScrollReveal } from '@/components/shared/ScrollReveal'
 import { cn } from '@/lib/utils'
@@ -124,6 +124,30 @@ const seasons = [
 export function Collection() {
   const [activeTab, setActiveTab] = useState<TabId>('by-origin')
 
+  const handleTabKeyDown = useCallback((e: React.KeyboardEvent) => {
+    const tabIds = tabs.map(t => t.id)
+    const currentIndex = tabIds.indexOf(activeTab)
+
+    let nextIndex: number | null = null
+    if (e.key === 'ArrowRight') {
+      nextIndex = (currentIndex + 1) % tabIds.length
+    } else if (e.key === 'ArrowLeft') {
+      nextIndex = (currentIndex - 1 + tabIds.length) % tabIds.length
+    } else if (e.key === 'Home') {
+      nextIndex = 0
+    } else if (e.key === 'End') {
+      nextIndex = tabIds.length - 1
+    }
+
+    if (nextIndex !== null) {
+      e.preventDefault()
+      setActiveTab(tabIds[nextIndex])
+      // Focus the newly selected tab
+      const nextTab = document.getElementById(`tab-${tabIds[nextIndex]}`)
+      nextTab?.focus()
+    }
+  }, [activeTab])
+
   return (
     <section id="collection" className="bg-ivory-50 py-24 md:py-32 relative">
       <div className="absolute top-0 left-0 right-0 h-px gold-line opacity-30" />
@@ -145,7 +169,7 @@ export function Collection() {
         </ScrollReveal>
 
         {/* Tabs */}
-        <ScrollReveal className="flex flex-wrap justify-center gap-2 mb-12 border-b border-ivory-400 pb-0" role="tablist" aria-label="Tea collection categories">
+        <ScrollReveal className="flex flex-wrap justify-center gap-2 mb-12 border-b border-ivory-400 pb-0" role="tablist" aria-label="Tea collection categories" onKeyDown={handleTabKeyDown}>
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -160,6 +184,7 @@ export function Collection() {
               aria-selected={activeTab === tab.id}
               aria-controls={`panel-${tab.id}`}
               role="tab"
+              tabIndex={activeTab === tab.id ? 0 : -1}
             >
               {tab.label}
             </button>
@@ -173,7 +198,11 @@ export function Collection() {
             {originProducts.map((product) => (
               <div
                 key={product.name}
-                className="tea-card group relative rounded-2xl overflow-hidden cursor-pointer bg-white border border-ivory-300 hover:border-gold-400 transition-all hover:shadow-lg"
+                role="link"
+                tabIndex={0}
+                aria-label={`${product.name} — ${product.type}, ${product.price}`}
+                className="tea-card group relative rounded-2xl overflow-hidden cursor-pointer bg-white border border-ivory-300 hover:border-gold-400 transition-all hover:shadow-lg focus-visible:outline-2 focus-visible:outline-gold-400 focus-visible:outline-offset-2"
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); /* future: navigate */ } }}
               >
                 <div className="aspect-[3/4] overflow-hidden">
                   <img
@@ -228,7 +257,11 @@ export function Collection() {
             {seasons.map((season) => (
               <div
                 key={season.name}
-                className="season-card group bg-white rounded-2xl p-6 border border-ivory-300 transition-all cursor-pointer"
+                role="link"
+                tabIndex={0}
+                aria-label={`${season.name} teas — ${season.months}`}
+                className="season-card group bg-white rounded-2xl p-6 border border-ivory-300 transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-gold-400 focus-visible:outline-offset-2"
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); /* future: navigate */ } }}
               >
                 <div className={`w-14 h-14 rounded-xl ${season.iconBg} flex items-center justify-center mb-4 ${season.iconHoverBg} transition-colors`}>
                   <season.icon className={`w-7 h-7 ${season.iconColor}`} />

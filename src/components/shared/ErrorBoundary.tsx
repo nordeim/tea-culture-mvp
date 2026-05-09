@@ -2,6 +2,8 @@ import { Component, type ReactNode, type ErrorInfo } from 'react'
 
 interface Props {
   children: ReactNode
+  /** If provided, renders a minimal inline error instead of full-page fallback */
+  sectionName?: string
 }
 
 interface State {
@@ -28,6 +30,24 @@ export class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
+      // Section-level fallback: minimal, doesn't break the page
+      if (this.props.sectionName) {
+        return (
+          <div className="py-16 px-6 text-center" role="alert">
+            <p className="text-bark-700/60 text-sm">
+              Unable to load {this.props.sectionName}.{' '}
+              <button
+                onClick={this.handleReset}
+                className="underline text-gold-500 hover:text-gold-600 transition-colors"
+              >
+                Try again
+              </button>
+            </p>
+          </div>
+        )
+      }
+
+      // Full-page fallback (root level)
       return (
         <div className="min-h-screen flex items-center justify-center bg-ivory-100">
           <div className="text-center px-6">

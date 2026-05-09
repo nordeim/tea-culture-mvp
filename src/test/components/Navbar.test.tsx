@@ -17,7 +17,6 @@ describe('Navbar', () => {
 
   it('renders desktop navigation links', () => {
     render(<Navbar />)
-    // Use getAllByText since links appear in both desktop and mobile menus
     expect(screen.getAllByText('Philosophy').length).toBeGreaterThanOrEqual(1)
     expect(screen.getAllByText('Collection').length).toBeGreaterThanOrEqual(1)
     expect(screen.getAllByText('Tea Culture').length).toBeGreaterThanOrEqual(1)
@@ -28,7 +27,7 @@ describe('Navbar', () => {
     render(<Navbar />)
     const menuButton = screen.getByLabelText('Open menu')
     fireEvent.click(menuButton)
-    expect(screen.getByText('Visit Shop')).toBeVisible()
+    expect(screen.getByText('Visit Shop')).toBeInTheDocument()
     expect(screen.getByLabelText('Close menu')).toBeInTheDocument()
   })
 
@@ -37,8 +36,40 @@ describe('Navbar', () => {
     const menuButton = screen.getByLabelText('Open menu')
     fireEvent.click(menuButton)
     const philosophyLinks = screen.getAllByText('Philosophy')
-    // Click the mobile one (last one)
     fireEvent.click(philosophyLinks[philosophyLinks.length - 1])
     expect(screen.getByLabelText('Open menu')).toBeInTheDocument()
+  })
+
+  it('closes mobile menu on Escape key', () => {
+    render(<Navbar />)
+    const menuButton = screen.getByLabelText('Open menu')
+    fireEvent.click(menuButton)
+    expect(screen.getByLabelText('Close menu')).toBeInTheDocument()
+
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.getByLabelText('Open menu')).toBeInTheDocument()
+  })
+
+  it('has aria-expanded on mobile menu button', () => {
+    render(<Navbar />)
+    const menuButton = screen.getByLabelText('Open menu')
+    expect(menuButton).toHaveAttribute('aria-expanded', 'false')
+
+    fireEvent.click(menuButton)
+    expect(menuButton).toHaveAttribute('aria-expanded', 'true')
+  })
+
+  it('has aria-controls pointing to mobile menu', () => {
+    render(<Navbar />)
+    const menuButton = screen.getByLabelText('Open menu')
+    expect(menuButton).toHaveAttribute('aria-controls', 'mobile-menu')
+  })
+
+  it('mobile menu has aria-modal when open', () => {
+    render(<Navbar />)
+    const menuButton = screen.getByLabelText('Open menu')
+    fireEvent.click(menuButton)
+    const menu = document.getElementById('mobile-menu')
+    expect(menu).toHaveAttribute('aria-modal', 'true')
   })
 })

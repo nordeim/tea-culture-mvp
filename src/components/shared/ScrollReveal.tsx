@@ -13,15 +13,14 @@ export function ScrollReveal({ children, className, delay, ...props }: ScrollRev
   useEffect(() => {
     const el = ref.current
     if (!el) return
+    let timeoutId: ReturnType<typeof setTimeout> | undefined
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setTimeout(() => {
-              if (el) {
-                el.classList.add('active')
-              }
+            timeoutId = setTimeout(() => {
+              el.classList.add('active')
             }, delay)
           }
         })
@@ -30,7 +29,10 @@ export function ScrollReveal({ children, className, delay, ...props }: ScrollRev
     )
 
     observer.observe(el)
-    return () => observer.disconnect()
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId)
+      observer.disconnect()
+    }
   }, [delay])
 
   return (

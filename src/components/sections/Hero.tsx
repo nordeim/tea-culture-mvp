@@ -7,19 +7,20 @@ export function Hero() {
       <div className="absolute inset-0">
         <img
           src="https://picsum.photos/seed/teagarden-misty/1920/1080.jpg"
-          alt="Tea Garden"
+          alt="Misty morning at a Yunnan tea garden with rows of tea bushes"
           className="w-full h-full object-cover"
           loading="eager"
+          fetchPriority="high"
         />
         <div className="hero-overlay absolute inset-0 hidden md:block" />
         <div className="hero-overlay-mobile absolute inset-0 md:hidden" />
       </div>
 
       {/* Floating Tea Leaves Decoration */}
-      <div className="absolute top-32 right-16 opacity-20 hidden lg:block">
+      <div className="absolute top-32 right-16 opacity-20 hidden lg:block" aria-hidden="true">
         <Leaf className="w-16 h-16 text-tea-300 leaf-float" />
       </div>
-      <div className="absolute top-48 right-48 opacity-10 hidden lg:block">
+      <div className="absolute top-48 right-48 opacity-10 hidden lg:block" aria-hidden="true">
         <Leaf className="w-10 h-10 text-tea-200 leaf-float" style={{ animationDelay: '1s' }} />
       </div>
 

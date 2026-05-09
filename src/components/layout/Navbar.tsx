@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Leaf, ShoppingBag, Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -12,6 +12,7 @@ const navLinks = [
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,7 +23,19 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const closeMobileMenu = () => setIsMobileMenuOpen(false)
+  const closeMobileMenu = useCallback(() => setIsMobileMenuOpen(false), [])
+
+  // Close on Escape key
+  useEffect(() => {
+    if (!isMobileMenuOpen) return
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsMobileMenuOpen(false)
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isMobileMenuOpen])
 
   return (
     <nav
@@ -70,6 +83,7 @@ export function Navbar() {
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-menu"
           >
             {isMobileMenuOpen ? (
               <X className="w-5 h-5 text-bark-800" />
@@ -82,10 +96,17 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       <div
+        id="mobile-menu"
+        ref={menuRef}
+        role="dialog"
+        aria-modal={isMobileMenuOpen}
+        aria-label="Navigation menu"
+        aria-hidden={!isMobileMenuOpen}
         className={cn(
-          'md:hidden bg-ivory-50/95 backdrop-blur-xl border-t border-ivory-300 transition-all duration-300',
-          isMobileMenuOpen ? 'block' : 'hidden'
+          'md:hidden bg-ivory-50/95 backdrop-blur-xl border-t border-ivory-300 overflow-hidden transition-all duration-300',
+          isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
         )}
+        {...(!isMobileMenuOpen ? { inert: true } : {})}
       >
         <div className="px-6 py-6 space-y-4">
           {navLinks.map((link) => (

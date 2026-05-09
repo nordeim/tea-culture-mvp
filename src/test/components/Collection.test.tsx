@@ -45,4 +45,38 @@ describe('Collection', () => {
     fireEvent.click(screen.getByText('By Origin'))
     expect(screen.getByText('Yunnan Pu\'erh')).toBeInTheDocument()
   })
+
+  it('has correct ARIA roles on tabs', () => {
+    render(<Collection />)
+    const tablist = screen.getByRole('tablist')
+    expect(tablist).toBeInTheDocument()
+
+    const tabs = screen.getAllByRole('tab')
+    expect(tabs).toHaveLength(3)
+    expect(tabs[0]).toHaveAttribute('aria-selected', 'true')
+    expect(tabs[1]).toHaveAttribute('aria-selected', 'false')
+    expect(tabs[2]).toHaveAttribute('aria-selected', 'false')
+  })
+
+  it('has correct tabIndex on tabs (roving tabindex)', () => {
+    render(<Collection />)
+    const tabs = screen.getAllByRole('tab')
+    expect(tabs[0]).toHaveAttribute('tabindex', '0')
+    expect(tabs[1]).toHaveAttribute('tabindex', '-1')
+    expect(tabs[2]).toHaveAttribute('tabindex', '-1')
+  })
+
+  it('product cards have role="link" and tabIndex', () => {
+    render(<Collection />)
+    const cards = screen.getAllByRole('link')
+    // At least the product cards should have role="link"
+    const productCards = cards.filter(c => c.getAttribute('tabindex') === '0')
+    expect(productCards.length).toBeGreaterThan(0)
+  })
+
+  it('tab panels have correct role and aria-labelledby', () => {
+    render(<Collection />)
+    const panel = screen.getByRole('tabpanel')
+    expect(panel).toHaveAttribute('aria-labelledby', 'tab-by-origin')
+  })
 })
