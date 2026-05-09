@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { ErrorBoundary } from '@/components/shared/ErrorBoundary'
 
@@ -8,10 +8,16 @@ function ThrowError({ shouldThrow }: { shouldThrow: boolean }) {
   return <div>Working content</div>
 }
 
-// Suppress console.error for these tests
-const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-
 describe('ErrorBoundary', () => {
+  let consoleSpy: ReturnType<typeof vi.spyOn>
+
+  beforeAll(() => {
+    consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+  })
+
+  afterAll(() => {
+    consoleSpy.mockRestore()
+  })
   it('renders children when no error', () => {
     render(
       <ErrorBoundary>
@@ -55,5 +61,4 @@ describe('ErrorBoundary', () => {
     expect(tryAgainBtn).toBeInTheDocument()
   })
 
-  consoleSpy.mockRestore()
 })

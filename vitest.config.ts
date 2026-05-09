@@ -16,8 +16,7 @@ export default defineConfig({
       '@hooks': '/src/hooks',
       '@lib': '/src/lib',
       '@routes': '/src/routes',
-      '@stores': '/src/stores',
-      '@types': '/src/types'
+      '@stores': '/src/stores'
     }
   },
   test: {

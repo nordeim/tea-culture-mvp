@@ -1,3 +1,19 @@
+awesome meticulous job so far. please keep up the good work. now, please meticulously re-evaluate and re-validate the critical gaps below to confirm the root causes and to identify the optimal fix. then meticulously plan to create a detailed remediation plan with ToDo list to apply the validated optimal fixes for the validated gaps and issues/bugs. review and validate the remediation against the codebase again to check for correct alignment before proceeding to execute it meticulously. use TDD approach to make changes. 
+
+# Todos
+[ ] Re-evaluate & validate all gaps and issues found during audit
+[ ] Perform root cause analysis for each confirmed gap/bug
+[ ] Create detailed remediation plan with ToDo list
+[ ] Validate remediation plan against codebase for alignment
+[ ] Execute approved fixes meticulously
+[ ] Final re-validation post-execution
+
+---
+
+please meticulously review @CODE_REVIEW_AUDIT_REPORT.md , @REMEDIATION_PLAN.md and @docs/status_mimo-audit.md and validate the code changes against the current codebase. also investigate the root cause for the vitest errors captured in @test_error.txt
+
+---
+
 Awesome meticulous job so far. Please zip the project's `src/` folder, including all the sub-directories and their files (meaning recursive), create the tar archive `tar -cf src.tar src` , save it in your workspace folder.
 
 ----
