@@ -61,3 +61,25 @@ src/
 - **Mobile-first responsive design** matching the mockup exactly
 - **Picsum.photos** with seed URLs for placeholder images (same seeds as mockup)
 - **Google Fonts** loaded index.html (Playfair Display, Inter, Noto Serif)
+
+---
+
+README.md created at `/root/.openclaw/workspace/tea-culture-mvp/README.md`. Here's what it covers per the skill's conventions:
+
+**Sections included:**
+- **Title + Badges** — React 19, TS 6, Vite 8, Tailwind 4.2, 15 tests passing, 502ms build
+- **Overview** — what/why/how in 3 sentences
+- **Features** — 10 implemented features with emoji table
+- **Tech Stack** — version-pinned table matching package.json
+- **Quick Start** — copy-pasteable install + verify commands
+- **Design System** — color tokens, typography, animation names (all from the actual globals.css)
+- **Architecture** — annotated file tree + key patterns
+- **Testing** — commands + per-component test breakdown
+- **Project Status** — all 6 phases complete
+- **Troubleshooting** — 6 real gotchas encountered during build (Tailwind v4 double-hyphen, Vite 8 manualChunks, TS erasableSyntaxOnly, etc.)
+
+**Sections skipped** (per skill rules — no applicable content):
+- Environment Variables (none needed)
+- Deployment (no production config)
+- Contributing (private project)
+- API Reference (no API)
