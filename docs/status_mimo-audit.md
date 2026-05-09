@@ -17,3 +17,6 @@ Now let me read the skills files and explore the codebase structure.The skills a
 **Weakest areas:** Accessibility (4/10 — multiple WCAG 2.1 AA failures), Testing (4/10 — 4 of 16 components tested), Performance (6/10 — LCP not optimized, no code splitting)
 
 The codebase passes `tsc --noEmit` (zero errors), `vitest run` (16/16 tests), and `vite build` (627ms) — solid foundations that need accessibility and testing remediation before production scale.
+
+---
+
