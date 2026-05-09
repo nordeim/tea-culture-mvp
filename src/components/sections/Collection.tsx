@@ -145,10 +145,11 @@ export function Collection() {
         </ScrollReveal>
 
         {/* Tabs */}
-        <ScrollReveal className="flex flex-wrap justify-center gap-2 mb-12 border-b border-ivory-400 pb-0">
+        <ScrollReveal className="flex flex-wrap justify-center gap-2 mb-12 border-b border-ivory-400 pb-0" role="tablist" aria-label="Tea collection categories">
           {tabs.map((tab) => (
             <button
               key={tab.id}
+              id={`tab-${tab.id}`}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
                 'px-6 py-3 text-sm font-medium tracking-wide border-b-2 border-transparent transition-all',
@@ -157,6 +158,7 @@ export function Collection() {
                   : 'text-bark-700/60 hover:text-bark-800'
               )}
               aria-selected={activeTab === tab.id}
+              aria-controls={`panel-${tab.id}`}
               role="tab"
             >
               {tab.label}
@@ -166,7 +168,8 @@ export function Collection() {
 
         {/* Tab Content: By Origin */}
         {activeTab === 'by-origin' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div role="tabpanel" id="panel-by-origin" aria-labelledby="tab-by-origin" tabIndex={0}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {originProducts.map((product) => (
               <div
                 key={product.name}
@@ -194,12 +197,14 @@ export function Collection() {
                 </div>
               </div>
             ))}
+            </div>
           </div>
         )}
 
         {/* Tab Content: By Fermentation */}
         {activeTab === 'by-ferment' && (
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+          <div role="tabpanel" id="panel-by-ferment" aria-labelledby="tab-by-ferment" tabIndex={0}>
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
             {fermentTypes.map((type) => (
               <ScrollReveal key={type.name} delay={type.delay} className="text-center group cursor-pointer">
                 <div className={`relative rounded-2xl overflow-hidden mb-4 aspect-[3/4] bg-gradient-to-b ${type.gradientFrom} ${type.gradientTo} flex items-end justify-center`}>
@@ -212,12 +217,14 @@ export function Collection() {
                 <p className="text-sm text-gold-500 font-medium mt-1">{type.price}</p>
               </ScrollReveal>
             ))}
+            </div>
           </div>
         )}
 
         {/* Tab Content: By Season */}
         {activeTab === 'by-season' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div role="tabpanel" id="panel-by-season" aria-labelledby="tab-by-season" tabIndex={0}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {seasons.map((season) => (
               <div
                 key={season.name}
@@ -239,6 +246,7 @@ export function Collection() {
                 </div>
               </div>
             ))}
+            </div>
           </div>
         )}
 
