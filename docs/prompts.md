@@ -1,4 +1,8 @@
-please meticulously plan to use your available skills, react19-typescript6-vite8-mvp (primary importance), super-frontend-design, frontend-ui-engineering and code-review-and-quality, to conduct systematic, methodically and through code review and audit to identify ui/ux asthetics, usability, gaps, issues, bugs, areas for improvements. then meticulously create a code review audit report as a markdown file with an appropriate filename.
+Please meticulously plan to use your available skills, react19-typescript6-vite8-mvp (primary importance), super-frontend-design, frontend-ui-engineering and code-review-and-quality, to conduct systematic, methodical, and thorough code review and audit to identify ui/ux asthetics, usability, gaps, issues, bugs, and areas for improvements. Then, meticulously create a code review audit report as a markdown file with an appropriate filename.
+
+---
+
+Please use `git clone https://github.com/nordeim/tea-culture-mvp.git` to your workspace, then meticulously review the included `AGENTS.md`, `CLAUDE.md` and `README.md` to have a deep understanding of the cloned codebase. Next, meticulously plan to use the included skills, `skills/react19-typescript6-vite8-mvp` (primary importance), `skills/super-frontend-design`, `skills/frontend-ui-engineering` and `skills/code-review-and-quality`, to conduct systematic, methodical, and thorough code review and audit to identify ui/ux asthetics, usability, gaps, issues, bugs, and areas for improvements. Then, meticulously create a code review audit report as a markdown file with an appropriate filename.
 
 Task:
  1. Use multiple skills to conduct a systematic code review and audit
@@ -23,7 +27,7 @@ You need to analyze across all five axes from the `code-review-and-quality` skil
  5. Performance
  Plus the UI/UX aesthetic, accessibility, and frontend-specific concerns from the other skills.
 
-Finally organize your findings into a comprehensive markdown report.
+Finally, organize your findings into a comprehensive markdown report.
 
  Key areas to cover:
  - TypeScript strictness issues
@@ -39,4 +43,4 @@ Finally organize your findings into a comprehensive markdown report.
  - Performance issues
  - Missing features / gaps
 
- Deliverable: create a comprehensive audit report.
+ Deliverable: Create a comprehensive audit report.
