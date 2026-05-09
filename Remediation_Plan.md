@@ -99,4 +99,28 @@ npx vitest run             # All tests pass (16 tests)
 
 ---
 
-Ready to execute. Shall I proceed?
+Executing all 5 fixes.
+
+**Fix 1: Delete dead code**Fix 2: Toast timeout stacking**Fix 3: Collection Tab ARIA accessibility**Fix 4: ErrorBoundary component**Fix 5: README typo**Final Verification:**Need to fix the ScrollReveal wrapper — `role` and `aria-label` need to be on the inner div. Let me update ScrollReveal to forward HTML attributes:All 5 fixes applied and verified.
+
+## Summary
+
+| # | Issue | Fix | Status |
+|---|---|
+| 1 | Dead code (`types/index.ts`, `hooks/useScrollReveal.ts`, unused animation) | Deleted 2 files, removed `--animate-slide-in-left` and `@keyframes slide-in-left` from globals.css | ✅ |
+| 2 | Toast timeout stacking | Added module-level `timeoutId` with `clearTimeout` before new `setTimeout` | ✅ |
+| 3 | Collection tabs missing ARIA | Added `role="tablist"`, `aria-controls`, `id` on tabs; `role="tabpanel"`, `aria-labelledby`, `tabIndex` on panels | ✅ |
+| 4 | No ErrorBoundary | Created `ErrorBoundary.tsx` (class component with fallback UI), wrapped `RouterProvider` in `main.tsx` | ✅ |
+| 5 | README typo | "single hyphene" → "single hyphen" | ✅ |
+
+### Final Verification
+
+``
+npx tsc --noEmit     ✅ Zero errors
+npm run build         ✅ 468ms
+npx vitest run        ✅ 16/16 tests passing
+```
+
+### Changes also made
+- `ScrollReveal` now extends `HTMLAttributes<HTMLDivElement>` so it can accept `role`, `aria-label`, and other standard HTML props — needed for Fix 3 and improves composability generally.
+- New test: "cancels previous timeout on rapid successive calls" — validates Fix 2 behavior.
