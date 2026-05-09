@@ -1,3 +1,7 @@
+Awesome meticulous job so far. Please zip the project's `src/` folder, including all the sub-directories and their files (meaning recursive), create the tar archive `tar -cf src.tar src` , save it in your workspace folder.
+
+----
+
 Please meticulously plan to use your available skills, react19-typescript6-vite8-mvp (primary importance), super-frontend-design, frontend-ui-engineering and code-review-and-quality, to conduct systematic, methodical, and thorough code review and audit to identify ui/ux asthetics, usability, gaps, issues, bugs, and areas for improvements. Then, meticulously create a code review audit report as a markdown file with an appropriate filename.
 
 ---
